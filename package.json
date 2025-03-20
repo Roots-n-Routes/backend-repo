@@ -1,0 +1,26 @@
+{
+  "name": "backend-repo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon app.js",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Roots-n-Routes/backend-repo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Roots-n-Routes/backend-repo/issues"
+  },
+  "homepage": "https://github.com/Roots-n-Routes/backend-repo#readme",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
