@@ -1,5 +1,6 @@
 const AuthService = require('../Services/auth_services')
 const passport = require('passport');
+const mongoose = require('mongoose')
 
 const signUp = async (req,res) => {
     const payload = req.body
@@ -24,6 +25,16 @@ const Login = (req,res,next) =>{
         res.status(loginResponse.code).json(loginResponse)
     })(req,res,next);
 }
+
+const VerifyControl = async (req,res,next) =>{
+    const {email,otp} = req.body
+
+    if (!email || !otp) {
+        return res.status(400).json({message:"Email and OTP are required"})
+    }
+    const otpResponse = await AuthService.VerifyOTP(email,otp)
+    res.status(otpResponse.code).json(otpResponse);
+};
 
 const GetAll = async(req,res) =>{
     const allUsersResponse = await AuthService.GetAllUsers({})
@@ -54,12 +65,15 @@ const UploadProfilePicture = async (req,res) => {
 const UpdateUser = async(req,res) =>{
     try {
         const userId = req.user.id
+        console.log(userId)
+
         const {first_name,last_name,email,dob,gender,nationality,emergency_contact,profilePicture,phone_number1,phone_number2} = req.body
     
         const updateResponse = await AuthService.UpdateUser({
             userId,
             first_name,last_name,dob,email,gender,phone_number1,phone_number2,emergency_contact,nationality,profilePicture
         })
+        console.log(userId)
         return res.status(updateResponse.code).json(updateResponse)
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message || "Server error" });
@@ -79,5 +93,5 @@ const DeleteUser = async (req,res) => {
 
 
 module.exports = {
-    signUp,Login,GetAll,UploadProfilePicture,UpdateUser,DeleteUser
+    signUp,Login,GetAll,UploadProfilePicture,UpdateUser,DeleteUser,VerifyControl
 }
