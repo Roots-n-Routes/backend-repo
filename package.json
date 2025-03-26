@@ -1,5 +1,5 @@
 {
-  "name": "roots-routes",
+  "name": "backend-repo",
   "version": "1.0.0",
   "description": "Roots and Routes a travel app for travellers across the globe",
   "license": "ISC",
@@ -11,6 +11,15 @@
     "start": "node server.js",
     "dev": "nodemon server.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Roots-n-Routes/backend-repo.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/Roots-n-Routes/backend-repo/issues"
+  },
+  "homepage": "https://github.com/Roots-n-Routes/backend-repo#readme",
   "dependencies": {
     "axios": "^1.8.4",
     "bcrypt": "^5.1.1",
