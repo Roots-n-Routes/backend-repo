@@ -6,6 +6,7 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy
 const FacebookStrategy = require('passport-facebook').Strategy
 const AppleStrategy = require('passport-apple').Strategy
 const UserModel = require('../../Model/user_model')
+const VendorModel = require('../../Model/vendor_model')
 require('dotenv').config()
 
 //Local Strategy (username and password)
@@ -36,9 +37,24 @@ const jwtOptions = {
   passport.use(new JwtStrategy(jwtOptions, async (jwtPayload, done) => {
     try {
       const user = await UserModel.findById(jwtPayload.id);
-      if (!user) return done(null, false);
-  
-      return done(null, user);
+      console.log("JWT Logged User:", user)
+     
+      if(!user) return done(null,false);
+      return done(null,user);
+    } catch (err) {
+      return done(err);
+    }
+  }));
+
+  passport.use(new JwtStrategy(jwtOptions, async (jwtPayload, done) => {
+    try {
+      const vendor = await VendorModel.findById(jwtPayload.id)
+      console.log("JWT Logged Vendor:", vendor)
+
+      if (!vendor) return done(null,false);
+
+      return done(null,vendor);
+    
     } catch (err) {
       return done(err);
     }
@@ -55,6 +71,29 @@ passport.use(new GoogleStrategy({
 
         if (!user) {
             user = await UserModel.create({
+                googleId:profile.id,
+                first_name:profile.name.givenName,
+                last_name:profile.name.familyName,
+                email:profile.emails[0].value,
+            });
+        }
+        return done(null,user);  
+    } catch (error) {
+        return done(err);
+    }
+}));
+
+//Google OAuth Strategy
+passport.use(new GoogleStrategy({
+    clientID:process.env.GOOGLE_CLIENT_ID,
+    clientSecret:process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL:'/auth/google/callback'
+},async (accessToken,refreshToken,profile,done) => {
+    try {
+        let vendor = await VendorModel.findOne({googleId:profile.id});
+
+        if (!vendor) {
+            vendor = await VendorModel.create({
                 googleId:profile.id,
                 first_name:profile.name.givenName,
                 last_name:profile.name.familyName,
@@ -116,10 +155,19 @@ passport.use(new AppleStrategy({
 
 //Serialize and Deserialize user
 passport.serializeUser((user,done) => done(null,user.id));
+passport.serializeUser((vendor,done) => done(null,vendor.id))
 passport.deserializeUser(async (id,done) => {
     try {
         const user = await UserModel.findById(id);
         done(null,user)
+    } catch (error) {
+        done(error);
+    } 
+});
+passport.deserializeUser(async (id,done) => {
+    try {
+        const vendor = await VendorModel.findById(id);
+        done(null,vendor)
     } catch (error) {
         done(error);
     } 

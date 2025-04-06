@@ -1,6 +1,5 @@
 const AuthService = require('../Services/auth_services')
 const passport = require('passport');
-const mongoose = require('mongoose')
 
 const signUp = async (req,res) => {
     const payload = req.body
@@ -55,7 +54,7 @@ const UploadProfilePicture = async (req,res) => {
 
         res.status(200).json({
             message:'Profile picture added successfully',
-            user,
+            user,   
         });
     } catch (error) {
         res.status(500).json({message:"Server error", error: error.message})
