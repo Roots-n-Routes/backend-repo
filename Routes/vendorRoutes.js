@@ -1,19 +1,20 @@
 const express = require('express')
 const passport = require('passport')
 const {upload} = require('../Utils/Cloudinary/config')
-const { signUp, Login, GetAll, UploadProfilePicture, UpdateUser, DeleteUser, VerifyControl } = require('../Controllers/auth_Controller');
-const {validateToken} = require('../Middleware/auth_middleware');
+const {SignUpBusiness,SignUpVendor,Login,VerifyControl,GetAllVendors,UploadVendorPicture,UpdateVendor,DeleteVendor } = require('../Controllers/vendor_controller');
+const {validateToken,validateVendor} = require('../Middleware/auth_middleware');
 const { Initiate, Redirect } = require('../Payment/initiatePayment');
 const router = express.Router()
 
 
-router.post('/signup',signUp)
+router.post('/signup-biz',SignUpBusiness)
+router.post('/signup-vendor',SignUpVendor)
 router.post('/login',Login)
 router.post('/verify',VerifyControl)
-router.get('/all',GetAll)
-router.post('/upload/:userId',upload.single('profile_pictures'),UploadProfilePicture)
-router.put('/update',validateToken,UpdateUser)
-router.delete('/delete/:userId',validateToken,DeleteUser)
+router.get('/vendorAll', GetAllVendors)
+router.post('/upload/:vendorId',upload.single('profile_picture'),UploadVendorPicture)
+router.put('/update',validateToken,UpdateVendor)
+router.delete('/delete/:vendorId',validateToken,DeleteVendor)
 router.post("/pay",validateToken,Initiate)
 router.get('/payment/callback',validateToken,Redirect)
 
@@ -35,5 +36,4 @@ router.get('/apple/callback', passport.authenticate('apple', { failureRedirect: 
     res.redirect('/dashboard');
 });
 
-module.exports = router
-  
+module.exports = router;

@@ -1,5 +1,4 @@
 const UserModel = require('../Model/user_model')
-const mongoose = require('mongoose')
 const speakeasy = require('speakeasy')
 const jwt = require('jsonwebtoken')
 const { redisClient} = require('../Utils/OTP/OTP.JS')
