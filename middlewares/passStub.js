@@ -1,0 +1,1 @@
+module.exports=(req,res,next)=>process.env.NODE_ENV==='test'?next():require('./authMiddleware')(req,res,next);

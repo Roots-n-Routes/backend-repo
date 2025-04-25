@@ -1,17 +1,14 @@
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-const app = require('./app'); // Import the app.js file
+const express = require("express");
 
-// Load environment variables
-dotenv.config();
+const PORT = 3000 || process.env.PORT;
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-}).then(() => console.log('MongoDB connected'))
-  .catch(err => console.error(err));
+const app = express();
 
-// Start the server
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
+// Routes
+app.get("/", (req, res) => {
+  res.send("Hello Root-n-Routes");
+});
+
+app.listen(PORT, () => {
+  console.log(`App is listening on port ${PORT}`);
+});

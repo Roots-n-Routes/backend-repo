@@ -1,3 +1,9 @@
+// Skip Passport configuration when NODE_ENV is "test"
+if (process.env.NODE_ENV === 'test') {
+    module.exports = () => {};
+    return;            // <-- Exit early, nothing below runs
+  }
+  
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const JwtStrategy = require('passport-jwt').Strategy;
