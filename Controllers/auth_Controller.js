@@ -14,14 +14,18 @@ const signUp = async (req,res) => {
 }
 
 const Login = (req,res,next) =>{
-    passport.authenticate('local', async(err,user,info) =>{
+    passport.authenticate('user-local', async(err,user,info) =>{
         if(err) return res.status(500).json({message:err.message})
             if(!user) return res.status(400).json({message:info.message});
-         const payload = req.body
+         //const payload = req.body
 
-        //Generate jwt token
-        const loginResponse = await AuthService.login({email:payload.email,password:payload.password});
-        res.status(loginResponse.code).json(loginResponse)
+         try {
+             //Generate jwt token
+            const loginResponse = await AuthService.sendOtpToVendor(user.email);
+            return res.status(loginResponse.code).json(loginResponse)
+         } catch (error) {
+            return res.status(500).json({message:error.message})
+         }
     })(req,res,next);
 }
 
@@ -42,14 +46,14 @@ const GetAll = async(req,res) =>{
 
 
 const UploadProfilePicture = async (req,res) => {
-    const {userId} = req.params;
-
    try {
         if(!req.file){
             return res.status(400).json({message:"No file uploaded"})
         }
 
-        const profilePictureUrl = req.file.path
+        const profilePictureUrl = req.file.path;
+        const userId = req.user._id;
+
         const user = await AuthService.addUserProfilePicture(userId,profilePictureUrl);
 
         res.status(200).json({
@@ -63,7 +67,7 @@ const UploadProfilePicture = async (req,res) => {
 
 const UpdateUser = async(req,res) =>{
     try {
-        const userId = req.user.id
+        const userId = req.user._id
         console.log(userId)
 
         const {first_name,last_name,email,dob,gender,nationality,emergency_contact,profilePicture,phone_number1,phone_number2} = req.body
@@ -81,15 +85,13 @@ const UpdateUser = async(req,res) =>{
 }
 
 const DeleteUser = async (req,res) => {
-    const user = req.user
+    const user = req.user._id
     
     const deleteResponse = await AuthService.DeleteUser({
         user
     })
     return res.status(deleteResponse.code).json(deleteResponse)
 }
-
-
 
 module.exports = {
     signUp,Login,GetAll,UploadProfilePicture,UpdateUser,DeleteUser,VerifyControl

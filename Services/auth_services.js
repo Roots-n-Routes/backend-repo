@@ -5,65 +5,101 @@ const { redisClient} = require('../Utils/OTP/OTP.JS')
 const {transporter} = require('../Utils/OTP/OTP.JS')
 require('dotenv').config()
 
-const login = async({email,password}) =>{
-    try {
-        const user = await UserModel.findOne({email});
+// const login = async({email,password}) =>{
+//     try {
+//         const user = await UserModel.findOne({email});
 
-        if(!user){
-            return{
-                code:400,
-                success:false,
-                data:null,
-                message:'Invalid Credentials'
-            }
-        }
-        const validPassword = await user.isValidPassword(password)
-        if (!validPassword) {
-            return {
-                code:400,
-                success:false,
-                data:null,
-                message:'Invalid Credentials'
-            }
-        }
-        // const token = jwt.sign({id:user._id, email:user.email},
-        //     process.env.JWT_SECRET,{expiresIn:"1d"}
-        // );
+//         if(!user){
+//             return{
+//                 code:400,
+//                 success:false,
+//                 data:null,
+//                 message:'Invalid Credentials'
+//             }
+//         }
+//         const validPassword = await user.isValidPassword(password)
+//         if (!validPassword) {
+//             return {
+//                 code:400,
+//                 success:false,
+//                 data:null,
+//                 message:'Invalid Credentials'
+//             }
+//         }
+//         // const token = jwt.sign({id:user._id, email:user.email},
+//         //     process.env.JWT_SECRET,{expiresIn:"1d"}
+//         // );
         
-        //Generate OTP
+//         //Generate OTP
+//         const otp = speakeasy.totp({
+//             secret:process.env.OTP_SECRET,
+//             digits:6,
+//             step:300
+//         });
+
+//         //store otp in redis with 5-min expiration
+//         await redisClient.setEx(`otp:${email}`,300,otp)
+
+//         //send OTP via email
+//         await transporter.sendMail({
+//             from:process.env.EMAIL_USER,
+//             to:email,
+//             subject:"OTP CODE",
+//             text:`Your OTP is ${otp}. It expires in 5 minutes.`,
+//         });
+
+//         return {
+//             code:200,
+//             success:true,
+//             //data:{user,token},
+//             data:{email},
+//             message:'OTP sent Successfully'
+//         }
+//     } catch (error) {
+//         return {
+//             code:500,
+//             success:false,
+//             data:null,
+//             message:error.message || 'Server Error'
+//         }
+//     }
+// }
+
+const sendOtpToVendor = async (email) => {
+    try {
+        // Generate OTP
         const otp = speakeasy.totp({
-            secret:process.env.OTP_SECRET,
-            digits:6,
-            step:300
+            secret: process.env.OTP_SECRET,
+            digits: 6,
+            step: 300
         });
 
-        //store otp in redis with 5-min expiration
-        await redisClient.setEx(`otp:${email}`,300,otp)
+        // Store OTP in Redis (expires in 5 minutes)
+        await redisClient.setEx(`otp:${email}`, 300, otp);
 
-        //send OTP via email
+        // Send OTP via email
         await transporter.sendMail({
-            from:process.env.EMAIL_USER,
-            to:email,
-            subject:"OTP CODE",
-            text:`Your OTP is ${otp}. It expires in 5 minutes.`,
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: "OTP CODE",
+            text: `Your OTP is ${otp}. It expires in 5 minutes.`,
         });
 
         return {
-            code:200,
-            success:true,
-            //data:{user,token},
-            data:{email},
-            message:'OTP sent Successfully'
-        }
+            code: 200,
+            success: true,
+            data: { email },
+            message: 'OTP sent successfully'
+        };
     } catch (error) {
         return {
-            code:500,
-            success:false,
-            data:null,
-            message:error.message || 'Server Error'
-        }
+            code: 500,
+            success: false,
+            data: null,
+            message: error.message || 'Server Error'
+        };
     }
-}
+};
 
 const SignUp = async ({first_name,last_name,password,email,gender}) => {
     try {
@@ -165,7 +201,7 @@ const addUserProfilePicture = async (userId, profilePictureUrl) => {
 
 const UpdateUser = async ({userId,first_name,last_name,dob,email,gender,phone_number1,phone_number2,emergency_contact,password,nationality,profilePicture}) => {
     try {
-        const user = await UserModel.findById(userId)
+        const user = await UserModel.findByIdAndUpdate(userId)
 
         if (!user) {
             return{
@@ -228,5 +264,5 @@ const DeleteUser = async({userId}) =>{
 
 
 module.exports = {
-    SignUp,login,GetAllUsers,addUserProfilePicture,UpdateUser,DeleteUser,VerifyOTP
+    SignUp,sendOtpToVendor,GetAllUsers,addUserProfilePicture,UpdateUser,DeleteUser,VerifyOTP
 }

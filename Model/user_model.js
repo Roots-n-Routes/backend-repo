@@ -32,7 +32,11 @@ const UserSchema = mongoose.Schema(
             type:String,
             required:[false]
         },
-        emergency_contact:{
+        emergencyContact:{
+            type:String,
+            required:[false]
+        },
+        verification:{
             type:String,
             enum:["International Passport","NIN","Drivers License"]
         },

@@ -3,69 +3,54 @@ const speakeasy = require('speakeasy')
 const jwt = require('jsonwebtoken')
 const { redisClient} = require('../Utils/OTP/OTP.JS')
 const {transporter} = require('../Utils/OTP/OTP.JS')
+const TransactionModel = require('../Model/transaction_model')
+const OrderModel = require('../Model/order_model')
 require('dotenv').config()
 
-const vendorLogin = async({email,password}) =>{
-    try{
-        const vendor = await VendorModel.findOne({email});
-        console.log("Vendor", vendor)
+const sendOtpToVendor = async (email) => {
+    try {
+        // Generate OTP
+        const otp = speakeasy.totp({
+            secret: process.env.OTP_SECRET,
+            digits: 6,
+            step: 300
+        });
 
-        if(!vendor){
-            return{
-                code:400,
-                success:false,
-                data:null,
-                message:"Invalid Credentials"
-            }
-        }
-        const validPassword = await vendor.isValidPassword(password)
-        if (!validPassword) {
-            return{
-                code:400,
-                success:false,
-                data:null,
-                message:'Invalid Credentials'
-            }
-        }
-        //Generate OTP
-            const otp = speakeasy.totp({
-                secret:process.env.OTP_SECRET,
-                digits:6,
-                step:300
-            });
-        
-            //store otp in redis with 5-min expiration
-            await redisClient.setEx(`otp:${email}`,300,otp)
-        
-            //send OTP via email
-            await transporter.sendMail({
-                from:process.env.EMAIL_USER,
-                to:email,
-                subject:"OTP CODE",
-                text:`Your OTP is ${otp}. It expires in 5 minutes.`,
-            });
-        
-            return {
-                code:200,
-                success:true,
-                //data:{user,token},
-                data:{email},
-                message:'OTP sent Successfully'
-            }
-    }catch (error) {
+        // Store OTP in Redis (expires in 5 minutes)
+        await redisClient.setEx(`otp:${email}`, 300, otp);
+
+        // Send OTP via email
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: "OTP CODE",
+            text: `Your OTP is ${otp}. It expires in 5 minutes.`,
+        });
+
         return {
-            code:500,
-            success:false,
-            data:null,
-            message:error.message || 'Server Error'
-        }
+            code: 200,
+            success: true,
+            data: { email },
+            message: 'OTP sent successfully'
+        };
+    } catch (error) {
+        return {
+            code: 500,
+            success: false,
+            data: null,
+            message: error.message || 'Server Error'
+        };
     }
-}
+};
 
 const VendorBusinessSignUp = async ({nameOfBusiness,nob,email,companyPhone,password}) => {
     try {
         const newBusiness = await VendorModel.create({
-            nameOfBusiness,nob,companyPhone,password,email
+            nameOfBusiness,
+            nob,
+            companyPhone,
+            password,
+            email
         });
         console.log("User:",newBusiness)
         return{
@@ -89,7 +74,11 @@ const VendorBusinessSignUp = async ({nameOfBusiness,nob,email,companyPhone,passw
 const VendorPrivateSignUp = async ({first_name,last_name,email,phoneNumber,password}) => {
     try {
         const newPrivate = await VendorModel.create({
-            first_name,last_name,email,phoneNumber,password
+            first_name,
+            last_name,
+            email,
+            phoneNumber,
+            password
         });
         return{
             code:201,
@@ -141,7 +130,7 @@ const VerifyOTP = async (email,vendorOTP) => {
 
 const UpdateVendor = async ({vendorId,first_name,last_name,email,nameOfBusiness,doi,nob,cobo,aob,state,city,zipcode,coo,spokenLang,noe,companyPhone,companySocials,password,confirmPassword}) => {
     try {
-        const vendor = await VendorModel.findById(vendorId)
+        const vendor = await VendorModel.findByIdAndUpdate(vendorId)
         console.log("Vendor",vendor)
         if (!vendor) {
             return{
@@ -255,8 +244,36 @@ const DeleteVendor = async({vendorId}) =>{
     }
 }
 
+const GetVendorPayments = async() =>{
+    try {
+        const transactions = await TransactionModel.find();
+        if (!transactions.length === 0) {
+            return{
+                code:404,
+                success:false,
+                message:"No transactions available",
+                data:null
+            };
+        }
+        return{
+            code:200,
+            success:true,
+            message:"Transactions available",
+            data:{Transactions:transactions}
+        }
+    } catch (error) {
+        return {
+            code: 500,
+            success: false,
+            message: error.message,
+            data:null
+        };
+    }
+}
+
 module.exports = {
-    vendorLogin, VendorBusinessSignUp, 
-    VendorPrivateSignUp,VerifyOTP,GetAllVendors,
-    addVendorProfilePicture,DeleteVendor,UpdateVendor
+    VendorBusinessSignUp,VendorPrivateSignUp,
+    VerifyOTP,GetAllVendors,
+    addVendorProfilePicture,DeleteVendor,UpdateVendor,
+    sendOtpToVendor,GetVendorPayments
 }
