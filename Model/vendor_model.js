@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 
 const VendorSchema = mongoose.Schema(
     {
@@ -74,9 +75,23 @@ const VendorSchema = mongoose.Schema(
             type:String,
             default:null
         },
+        account_number:{
+            type:String
+        },
+        bankCode:{
+            type:String
+        },
         password:{
             type:String,
             required:[true,"Please enter your password"]
+        },
+        resetPasswordToken:{
+            type:String,
+            require:false
+        },
+        resetPasswordExpires:{
+            type:Date,
+            required:false
         },
         created_at:{
             type:Date,
@@ -91,6 +106,8 @@ VendorSchema.pre(
     'save',
     async function (next){
         const user = this;
+        if(!this.isModified('password')) return next()
+
         const hash = await bcrypt.hash(this.password,10);
         this.password = hash;
         next()
@@ -101,6 +118,13 @@ VendorSchema.methods.isValidPassword = async function(password){
     const user = this;
     const compare = await bcrypt.compare(password,user.password)
     return compare
+}
+
+VendorSchema.methods.generatedPasswordResetToken = function () {
+    const resetToken = crypto.randomBytes(32).toString("hex")
+    this.resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+    this.resetPasswordExpires = Date.now() + 10 * 60 * 1000
+    return resetToken;
 }
 
 const VendorModel = mongoose.model("vendors",VendorSchema)
