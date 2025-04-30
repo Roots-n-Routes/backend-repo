@@ -1,5 +1,5 @@
 // controllers/propertyController.js
-const Apartment = require("../models/apartmentModel");
+const Apartment = require("../Model/apartmentModel");
 
 // Get all apartments
 exports.getAllApartments = async (req, res) => {

@@ -7,7 +7,6 @@ const { InitiatePayment, verifyTransaction } = require('../Payment/Payments');
 const { validateCreateVendor,validateUpdateVendor } = require('../Middleware/validation_middleware');
 const router = express.Router()
 
-
 router.post('/signup-biz',validateCreateVendor,SignUpBusiness)
 router.post('/signup-vendor',validateCreateVendor,SignUpVendor)
 router.post('/login',Login)

@@ -1,4 +1,4 @@
-const Review = require("../models/reviewModel");
+const Review = require("../Model/reviewModel");
 
 exports.createReview = async (req, res) => {
   const { apartment, rating, comment } = req.body;
