@@ -7,8 +7,9 @@ const morgan = require('morgan');
 const db = require('./Utils/MongoDb/db');
 const authRoutes = require('./routes/authRoutes')
 const vendorRoutes = require('./routes/vendorRoutes')
-const PaymentRoutes = require('./Routes/paymentRoutes')
-const OrderRoutes = require('./Routes/orderRoutes')
+//const PaymentRoutes = require('./Routes/paymentRoutes')
+const OrderRoutes = require('./routes/orderRoutes')
+const ApartmentRoute = require('./routes/apartmentRoute')
 const PORT = 4000;
 
 db.connectToMongoDb()
@@ -29,8 +30,9 @@ app.use(limiter)
 
 app.use('/auth',authRoutes)
 app.use('/vendor',vendorRoutes)
-app.use('/payment',PaymentRoutes)
+//app.use('/payment',PaymentRoutes)
 app.use('/orders',OrderRoutes)
+app.use('/apartment',ApartmentRoute)
 
 
 app.listen(PORT, () => {

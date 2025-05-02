@@ -1,4 +1,3 @@
-// controllers/propertyController.js
 const Apartment = require("../Model/apartmentModel");
 
 // Get all apartments

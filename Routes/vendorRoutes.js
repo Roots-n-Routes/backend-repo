@@ -3,7 +3,7 @@ const passport = require('passport')
 const {upload} = require('../Utils/Cloudinary/config')
 const {SignUpBusiness,SignUpVendor,Login,VerifyControl,GetAllVendors,UploadVendorPicture,UpdateVendor,DeleteVendor, ForgotPassword, ResetToken, GetPayments } = require('../Controllers/vendor_controller');
 const validateToken = require('../Middleware/auth_middleware');
-const { InitiatePayment, verifyTransaction } = require('../Payment/Payments');
+//const { InitiatePayment, verifyTransaction } = require('../Payment/Payments');
 const { validateCreateVendor,validateUpdateVendor } = require('../Middleware/validation_middleware');
 const router = express.Router()
 
@@ -18,8 +18,8 @@ router.put('/update',passport.authenticate('vendor-jwt',{session:false}),validat
 router.delete('/delete',passport.authenticate('vendor-jwt',{session:false}),DeleteVendor)
 
 
-router.post("/pay",validateToken,InitiatePayment)
-router.get('/payment/callback',validateToken,verifyTransaction)
+// router.post("/pay",validateToken,InitiatePayment)
+// router.get('/payment/callback',validateToken,verifyTransaction)
 router.post('/forgot-password',ForgotPassword)
 router.post('/reset-password/:token',ResetToken)
 

@@ -5,7 +5,7 @@ const apartmentController = require('../controllers/apartmentController');
 const {upload} = require('../Utils/Cloudinary/config')
 
 // Get all apartments
-router.get('/', apartmentController.getAllApartments);
+router.get('/all', apartmentController.getAllApartments);
 
 //Get property search filter
 router.get("/search", apartmentController.searchApartment);
@@ -14,7 +14,7 @@ router.get("/search", apartmentController.searchApartment);
 router.get('/:id', apartmentController.getApartment);
 
 // Create an apartment (Host only)
-router.post('/',passport.authenticate('vendor-jwt',{session:false}), apartmentController.createApartment);
+router.post('/create',passport.authenticate('vendor-jwt',{session:false}), apartmentController.createApartment);
 //router.post('/', apartmentController.createApartment);
 
 // To see image upload

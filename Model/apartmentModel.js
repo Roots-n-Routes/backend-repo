@@ -6,7 +6,7 @@ const apartmentSchema = new mongoose.Schema({
   destination: {
     city: { type: String, required: true },
     address: { type: String, required: true },
-    coordinates: { type: [Number], index: '2dsphere' }, // [longitude, latitude]
+    coordinates: { type: [Number], index: '2dsphere',required:false}, // [longitude, latitude]
   },
   availableUnits: {type: Number},
   pricePerNight: { type: Number, required: true },
@@ -14,12 +14,10 @@ const apartmentSchema = new mongoose.Schema({
   bathrooms: { type: Number, required: true },
   maxTravelers: { type: Number, required: true },
   maxGuests: { type: Number, required: true },
-  amenities: [{ type: String }], // e.g., ["WiFi", "Kitchen", "Pool"]
-  images: [{ type: String }], // Array of image URLs
+  amenities: [{ type: String,required:false }], // e.g., ["WiFi", "Kitchen", "Pool"]
+  images: [{ type: String,required:false}], // Array of image URLs
   host: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   isAvailable: { type: Boolean, default: true },
-  createdAt: { type: Date, default: Date.now },
-
   bookings: [
     {
       checkIn: Date,
