@@ -1,5 +1,5 @@
-const Booking = require("../models/bookingModel");
-const Apartment = require("../models/apartmentModel");
+const Booking = require("../Model/bookingModel");
+const Apartment = require("../Model/apartmentModel");
 
 exports.createBooking = async (req, res) => {
   const { apartmentId, checkInDate, checkOutDate } = req.body;

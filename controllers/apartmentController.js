@@ -1,4 +1,4 @@
-const Apartment = require("../Model/apartmentModel");
+const apartmentModel = require("../Model/apartmentModel");
 
 // Get all apartments
 exports.getAllApartments = async (req, res) => {
@@ -133,3 +133,40 @@ exports.searchApartment = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+
+exports.getApprove = async (req, res) => {
+    try {
+      const booking = await apartmentModel.findById(req.user.id);
+      if (!booking) return res.status(404).json({ success: false, message: "Apartment not found" });
+  
+      if (booking.status !== 'pending') {
+        return res.status(400).json({ success: false, message: "No pending Apartment" });
+      }
+  
+      booking.status = 'approved';
+      await booking.save();
+  
+      res.json({ success: true, message: "Booking approved", booking });
+    } catch (err) {
+      res.status(500).json({ success: false, message: "Error approving booking", error: err.message });
+    }
+  };
+
+  exports.getCancel = async (req, res) => {
+      try {
+        const booking = await apartmentModel.findById(req.user.id);
+        if (!booking) return res.status(404).json({ success: false, message: "Apartment not found" });
+    
+        if (booking.status !== 'pending') {
+          return res.status(400).json({ success: false, message: "No pending Apartment" });
+        }
+    
+        booking.status = 'cancelled';
+        await booking.save();
+    
+        res.json({ success: true, message: "Booking cancelled", booking });
+      } catch (err) {
+        res.status(500).json({ success: false, message: "Error cancelling booking", error: err.message });
+      }
+    };

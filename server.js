@@ -10,6 +10,7 @@ const vendorRoutes = require('./routes/vendorRoutes')
 //const PaymentRoutes = require('./Routes/paymentRoutes')
 const OrderRoutes = require('./routes/orderRoutes')
 const ApartmentRoute = require('./routes/apartmentRoute')
+const BookingRoute = require('./routes/bookingRoute')
 const PORT = 4000;
 
 db.connectToMongoDb()
@@ -33,6 +34,7 @@ app.use('/vendor',vendorRoutes)
 //app.use('/payment',PaymentRoutes)
 app.use('/orders',OrderRoutes)
 app.use('/apartment',ApartmentRoute)
+app.use('/bookings', BookingRoute);
 
 
 app.listen(PORT, () => {
