@@ -21,7 +21,7 @@ jobs:
       - name: Configure AWS Credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_SECRET }} # Dummy Secret Name - Replace in GitHub Secrets
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_SECRET }} 
           aws-region: ${{ secrets.AWS_REGION_SECRET }}           # Dummy Secret Name - Replace in GitHub Secrets
           role-session-name: GitHubActionsRnRBackendDeployEC2
 
@@ -68,8 +68,8 @@ jobs:
             echo "${{ secrets.ALL_SECRETS }}" > /tmp/deploy.env
 
             echo "Starting new container with secrets from file..."
-            # Use --env-file to load variables and correct port mapping
-            docker run -d --name r-n-r-backend-app -p 80:4000 --restart always \
+            # Use --env-file to load variables and map HOST port 8080 to CONTAINER port 4000
+            docker run -d --name r-n-r-backend-app -p 8080:4000 --restart always \
               --env-file /tmp/deploy.env \
               ${{ steps.build-image.outputs.image_uri }}
 
