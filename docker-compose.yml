@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  backend:
+    build: . # Build the image from the Dockerfile in the current directory
+    container_name: rnr_backend_app # Name for the backend container
+    ports:
+      - "3000:4000" # Map host port 3000 to container port 4000 (where the app listens)
+    env_file:
+      - .env # Load environment variables from .env file
+    depends_on:
+      - mongo
+      - redis
+    volumes:
+      - .:/app # Mount current directory to /app in container for development (optional, allows code changes without rebuild)
+      - /app/node_modules # Prevent host node_modules from overwriting container node_modules
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:latest # Use the official MongoDB image
+    container_name: rnr_mongo_db # Name for the mongo container
+    ports:
+      - "27018:27017" # Map host port 27018 to container port 27017
+    volumes:
+      - mongo_data:/data/db # Persist MongoDB data using a named volume
+    restart: unless-stopped
+
+  redis:
+    image: redis:latest # Use the official Redis image
+    container_name: rnr_redis_cache # Name for the redis container
+    ports:
+      - "6379:6379" # Expose Redis port to the host (optional, for external tools)
+    volumes:
+      - redis_data:/data # Persist Redis data using a named volume
+    restart: unless-stopped
+
+volumes: # Define named volumes for data persistence
+  mongo_data:
+  redis_data:
