@@ -1,8 +1,8 @@
 const UserModel = require('../Model/user_model')
 const speakeasy = require('speakeasy')
 const jwt = require('jsonwebtoken')
-const { redisClient} = require('../Utils/OTP/OTP.JS')
-const {transporter} = require('../Utils/OTP/OTP.JS')
+const { redisClient} = require('../Utils/OTP/Otp.js')
+const {transporter} = require('../Utils/OTP/Otp.js')
 require('dotenv').config()
 
 // const login = async({email,password}) =>{
