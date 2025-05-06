@@ -3,7 +3,7 @@ const apartmentModel = require("../Model/apartmentModel");
 // Get all apartments
 exports.getAllApartments = async (req, res) => {
   try {
-    const apartments = await Apartment.find();
+    const apartments = await apartmentModel.find({});
     res.json(apartments);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -13,7 +13,7 @@ exports.getAllApartments = async (req, res) => {
 // Get single apartment
 exports.getApartment = async (req, res) => {
   try {
-    const apartment = await Apartment.findById(req.params.id);
+    const apartment = await apartmentModel.findById(req.params.id);
     if (!apartment) return res.status(404).json({ message: 'Not found' });
     res.json(apartment);
   } catch (err) {
@@ -28,7 +28,7 @@ exports.createApartment = async (req, res) => {
     const imagePaths = (req.files || []).map(f => f.path);
 
     // Create new apartment with all relevant data
-    const newApartment = new Apartment({
+    const newApartment = new apartmentModel({
       ...req.body,
       images: imagePaths,
       host: req.user._id, // comes from auth middleware
@@ -45,7 +45,7 @@ exports.createApartment = async (req, res) => {
 // Update apartment
 exports.updateApartment = async (req, res) => {
   try {
-    const updated = await Apartment.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updated = await apartmentModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
     res.json(updated);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -55,7 +55,7 @@ exports.updateApartment = async (req, res) => {
 // Delete apartment
 exports.deleteApartment = async (req, res) => {
   try {
-    await Apartment.findByIdAndDelete(req.params.id);
+    await apartmentModel.findByIdAndDelete(req.params.id);
     res.json({ message: 'Deleted successfully' });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -127,7 +127,7 @@ exports.searchApartment = async (req, res) => {
       };
     }
 
-    const properties = await Apartment.find(query);
+    const properties = await apartmentModel.find(query);
     res.status(200).json(properties);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -136,37 +136,33 @@ exports.searchApartment = async (req, res) => {
 
 
 exports.getApprove = async (req, res) => {
-    try {
-      const booking = await apartmentModel.findById(req.user.id);
-      if (!booking) return res.status(404).json({ success: false, message: "Apartment not found" });
-  
-      if (booking.status !== 'pending') {
-        return res.status(400).json({ success: false, message: "No pending Apartment" });
-      }
-  
-      booking.status = 'approved';
-      await booking.save();
-  
-      res.json({ success: true, message: "Booking approved", booking });
-    } catch (err) {
-      res.status(500).json({ success: false, message: "Error approving booking", error: err.message });
-    }
-  };
+  const { apartmentId } = req.params;
 
-  exports.getCancel = async (req, res) => {
-      try {
-        const booking = await apartmentModel.findById(req.user.id);
-        if (!booking) return res.status(404).json({ success: false, message: "Apartment not found" });
-    
-        if (booking.status !== 'pending') {
-          return res.status(400).json({ success: false, message: "No pending Apartment" });
-        }
-    
-        booking.status = 'cancelled';
-        await booking.save();
-    
-        res.json({ success: true, message: "Booking cancelled", booking });
-      } catch (err) {
-        res.status(500).json({ success: false, message: "Error cancelling booking", error: err.message });
-      }
-    };
+  const apartment = await apartmentModel.findById(apartmentId);
+  if (!apartment) return res.status(404).json({ success: false, message: "Apartment not found" });
+
+  if (apartment.status !== "pending") {
+    return res.status(400).json({ success: false, message: "Apartment not pending" });
+  }
+
+  apartment.status = "approved";
+  await apartment.save();
+
+  res.status(200).json({ success: true, message: "Apartment approved", apartment });
+};
+
+exports.getCancel = async (req, res) => {
+  const { apartmentId } = req.params;
+
+  const apartment = await apartmentModel.findById(apartmentId);
+  if (!apartment) return res.status(404).json({ success: false, message: "Apartment not found" });
+
+  if (apartment.status !== "pending") {
+    return res.status(400).json({ success: false, message: "Apartment not pending" });
+  }
+
+  apartment.status = "cancelled";
+  await apartment.save();
+
+  res.status(200).json({ success: true, message: "Apartment cancelled", apartment });
+};

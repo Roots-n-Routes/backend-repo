@@ -2,47 +2,32 @@ const express = require("express");
 const passport = require("passport");
 const router = express.Router();
 const apartmentController = require("../controllers/apartmentController");
-const { validateCreateApartment, validateUpdateApartment, validateApproveApartment, validateCancelApartment } = require("../Middleware/accommodation_middleware");
+const { validateCreateApartment, validateUpdateApartment } = require("../Middleware/accommodation_middleware");
 const { upload } = require("../Utils/Cloudinary/config");
 
 // Get all apartments
 router.get("/all", apartmentController.getAllApartments);
-
-//Approved status
-router.get(
-  "/approved",
-  passport.authenticate("vendor-jwt", { session: false }),
-  validateApproveApartment,
-  (req, res) => {
-    res.status(201).json({
-      success: true,
-      message: "Apartment status approved",
-      apartmentData: req.body,
-    });
-  },
-  apartmentController.getApprove
-);
-
-//Cancel status
-router.get(
-  "/cancel",
-  passport.authenticate("vendor-jwt", { session: false }),
-  validateCancelApartment,
-  (req, res) => {
-    res.status(201).json({
-      success: true,
-      message: "Apartment status cancelled",
-      apartmentData: req.body,
-    });
-  },
-  apartmentController.getCancel
-);
 
 //Get property search filter
 router.get("/search", apartmentController.searchApartment);
 
 // Get a single apartment
 router.get("/:id", apartmentController.getApartment);
+//router.get("/apartment/:apartmentId", apartmentController.getApartment);
+
+//validate approved apartment
+router.put(
+  "/:apartmentId/approve",
+  passport.authenticate("vendor-jwt", { session: false }),
+  apartmentController.getApprove
+);
+
+//validate cancel apartment
+router.put(
+  "/:apartmentId/cancel",
+  passport.authenticate("vendor-jwt", { session: false }),
+  apartmentController.getCancel
+);
 
 // Create an apartment (Host only)
 router.post(

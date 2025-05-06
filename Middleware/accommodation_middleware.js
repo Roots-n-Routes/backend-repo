@@ -75,41 +75,9 @@ const validateUpdateApartment = async (req, res, next) => {
 };
 
 // Cancel Accommodation Middleware (uses same schema — you can separate if needed)
-const validateCancelApartment = async (req, res, next) => {
-  const { error, value } = apartmentSchema.validate(req.body, {
-    abortEarly: false,
-    stripUnknown: true
-  });
 
-  if (error) {
-    return res.status(422).json({
-      success: false,
-      message: "Validation failed",
-      errors: error.details.map((err) => err.message)
-    });
-  }
-
-  req.body = value;
-  next();
-};
 
 // Approve Accommodation Middleware (uses same schema — you can separate if needed)
-const validateApproveApartment = async (req, res, next) => {
-  const { error, value } = apartmentSchema.validate(req.body, {
-    abortEarly: false,
-    stripUnknown: true
-  });
 
-  if (error) {
-    return res.status(422).json({
-      success: false,
-      message: "Validation failed",
-      errors: error.details.map((err) => err.message)
-    });
-  }
 
-  req.body = value;
-  next();
-};
-
-module.exports = { validateCreateApartment, validateUpdateApartment, validateCancelApartment, validateApproveApartment };
+module.exports = { validateCreateApartment, validateUpdateApartment };
