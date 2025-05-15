@@ -2,6 +2,7 @@ const express = require('express')
 const passport = require('./Utils/Config/passport')
 const session = require('express-session')
 const rateLimiter = require('express-rate-limit')
+const cors = require('cors')
 const app = express()
 const morgan = require('morgan');
 const db = require('./Utils/MongoDb/db');
@@ -21,6 +22,7 @@ app.use(session({secret:process.env.SESSION_SECRET,resave:false,saveUninitialize
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(morgan('tiny'))
+app.use(cors())
 
 const limiter = rateLimiter({
     windowsMs: 15 * 60  * 1000,

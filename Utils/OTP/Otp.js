@@ -14,15 +14,15 @@ redisClient.connect().then(() => {
 
     //Test Redis set/get operations
     redisClient.set('testKey', 'Redis is working!', (err, reply) =>{
-        if(err) console.error('Set Error:', err);
-        else console.log('Set Reply:',reply); //Should print 'OK' if working
+         if(err) console.error('Set Error:', err);
+         else console.log('Set Reply:',reply); //Should print 'OK' if working
 
-        //Now, test getting the value
-        redisClient.get('testKey', (err, value) =>{
-            if(err) console.error('Get Error:', err)
-                else console.log('Get Value:', value);//Should print 'Redis is working'
-        })
-    })
+         //Now, test getting the value
+         redisClient.get('testKey', (err, value) =>{
+             if(err) console.error('Get Error:', err)
+                 else console.log('Get Value:', value);//Should print 'Redis is working'
+         })
+     }) 
 });
  
 
