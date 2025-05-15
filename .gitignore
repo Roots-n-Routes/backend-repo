@@ -1,6 +1,4 @@
 node_modules
 .env
-/node_modules
-.env
-secrettest.txt
 package-lock.json
+secrettest.txt

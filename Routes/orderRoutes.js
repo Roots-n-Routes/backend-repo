@@ -1,6 +1,6 @@
 const express = require('express')
 const validateToken = require('../Middleware/auth_middleware')
-const { CreateOrder, GetAllOrder, ConfirmDelivery } = require('../Controllers/order_controlller')
+const { CreateOrder, GetAllOrder, ConfirmDelivery } = require('../controllers/order_controlller')
 const passport = require('passport')
 const router = express.Router()
 
