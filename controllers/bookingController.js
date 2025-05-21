@@ -1,7 +1,7 @@
 const Booking = require("../Model/bookingModel");
 const Apartment = require("../Model/apartmentModel");
 
-exports.createBooking = async (req, res) => {
+const CreateBooking = async (req, res) => {
   const { apartmentId, checkInDate, checkOutDate } = req.body;
 
   const apartment = await Apartment.findById(apartmentId);
@@ -33,7 +33,9 @@ exports.createBooking = async (req, res) => {
   res.status(201).json(booking);
 };
 
-exports.getUserBookings = async (req, res) => {
+const GetUserBookings = async (req, res) => {
   const bookings = await Booking.find({ user: req.params.userId }).populate("apartment");
   res.status(200).json(bookings);
 };
+
+module.exports = {CreateBooking,GetUserBookings}

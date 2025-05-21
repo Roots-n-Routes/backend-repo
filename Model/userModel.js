@@ -44,9 +44,17 @@ const UserSchema = mongoose.Schema(
             type:String,
             required:[false]
         },
+        about_me:{
+            type:String,
+            required:false
+        },
         profilePicture:{
             type:String,
             default:null
+        },
+        id_number:{
+            type:String,    
+            required:false
         },
         password:{
             type:String,

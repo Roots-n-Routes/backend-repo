@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const reviewController = require("../controllers/reviewController");
-const passport = require('passport')
+const passport = require('passport');
+const { CreateReview, GetApartmentReviews } = require("../Controllers/reviewController");
 
-router.post("/",passport.authenticate('vendor-jwt',{session:false}), reviewController.createReview);
+router.post("/",passport.authenticate('vendor-jwt',{session:false}), CreateReview);
 router.post("/", reviewController.createReview);
-router.get("/:apartmentId", reviewController.getApartmentReviews);
+router.get("/:apartmentId", GetApartmentReviews);
 
 module.exports = router;

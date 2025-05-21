@@ -1,7 +1,7 @@
 const apartmentModel = require("../Model/apartmentModel");
 
 // Get all apartments
-exports.getAllApartments = async (req, res) => {
+const GetAllApartments = async (req, res) => {
   try {
     const apartments = await apartmentModel.find({});
     res.json(apartments);
@@ -11,7 +11,7 @@ exports.getAllApartments = async (req, res) => {
 };
 
 // Get single apartment
-exports.getApartment = async (req, res) => {
+const GetApartment = async (req, res) => {
   try {
     const apartment = await apartmentModel.findById(req.params.id);
     if (!apartment) return res.status(404).json({ message: 'Not found' });
@@ -22,7 +22,7 @@ exports.getApartment = async (req, res) => {
 };
 
 // Create new apartment
-exports.createApartment = async (req, res) => {
+const CreateApartment = async (req, res) => {
   try {
     // Get uploaded image paths
     const imagePaths = (req.files || []).map(f => f.path);
@@ -43,7 +43,7 @@ exports.createApartment = async (req, res) => {
 };
 
 // Update apartment
-exports.updateApartment = async (req, res) => {
+const UpdateApartment = async (req, res) => {
   try {
     const updated = await apartmentModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
     res.json(updated);
@@ -53,7 +53,7 @@ exports.updateApartment = async (req, res) => {
 };
 
 // Delete apartment
-exports.deleteApartment = async (req, res) => {
+const DeleteApartment = async (req, res) => {
   try {
     await apartmentModel.findByIdAndDelete(req.params.id);
     res.json({ message: 'Deleted successfully' });
@@ -63,7 +63,7 @@ exports.deleteApartment = async (req, res) => {
 };
 
 // Search filter
-exports.searchApartment = async (req, res) => {
+const SearchApartment = async (req, res) => {
   try {
     const {
       destination,
@@ -135,7 +135,7 @@ exports.searchApartment = async (req, res) => {
 };
 
 
-exports.getApprove = async (req, res) => {
+const GetApprove = async (req, res) => {
   const { apartmentId } = req.params;
 
   const apartment = await apartmentModel.findById(apartmentId);
@@ -151,7 +151,7 @@ exports.getApprove = async (req, res) => {
   res.status(200).json({ success: true, message: "Apartment approved", apartment });
 };
 
-exports.getCancel = async (req, res) => {
+const GetCancel = async (req, res) => {
   const { apartmentId } = req.params;
 
   const apartment = await apartmentModel.findById(apartmentId);
@@ -166,3 +166,9 @@ exports.getCancel = async (req, res) => {
 
   res.status(200).json({ success: true, message: "Apartment cancelled", apartment });
 };
+
+module.exports = {
+  GetAllApartments,GetApartment,GetApprove,
+  CreateApartment,SearchApartment,UpdateApartment,
+  DeleteApartment,GetCancel
+}

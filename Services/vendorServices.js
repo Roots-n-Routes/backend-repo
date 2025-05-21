@@ -1,10 +1,10 @@
-const VendorModel = require('../Model/vendor_model')
+const VendorModel = require('../Model/vendorModel.js')
 const speakeasy = require('speakeasy')
 const jwt = require('jsonwebtoken')
 const { redisClient} = require('../Utils/OTP/Otp.js')
 const {transporter} = require('../Utils/OTP/Otp.js')
-const TransactionModel = require('../Model/transaction_model')
-const OrderModel = require('../Model/order_model')
+const TransactionModel = require('../Model/transactionModel.js')
+const OrderModel = require('../Model/orderModel.js')
 require('dotenv').config()
 
 const sendOtpToVendor = async (email) => {

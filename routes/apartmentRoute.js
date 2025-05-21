@@ -1,33 +1,28 @@
 const express = require("express");
 const passport = require("passport");
 const router = express.Router();
-const apartmentController = require("../controllers/apartmentController");
 const { validateCreateApartment, validateUpdateApartment } = require("../Middleware/accommodation_middleware");
 const { upload } = require("../Utils/Cloudinary/config");
+const { GetAllApartments,SearchApartment,GetApartment,GetApprove,GetCancel,CreateApartment,UpdateApartment,DeleteApartment} = require("../controllers/apartmentController");
 
 // Get all apartments
-router.get("/all", apartmentController.getAllApartments);
+router.get("/all", GetAllApartments);
 
 //Get property search filter
-router.get("/search", apartmentController.searchApartment);
+router.get("/search", SearchApartment);
 
 // Get a single apartment
-router.get("/:id", apartmentController.getApartment);
-//router.get("/apartment/:apartmentId", apartmentController.getApartment);
+router.get("/:id",GetApartment);
 
 //validate approved apartment
 router.put(
   "/:apartmentId/approve",
-  passport.authenticate("vendor-jwt", { session: false }),
-  apartmentController.getApprove
-);
+  passport.authenticate("vendor-jwt", { session: false }),GetApprove);
 
 //validate cancel apartment
 router.put(
   "/:apartmentId/cancel",
-  passport.authenticate("vendor-jwt", { session: false }),
-  apartmentController.getCancel
-);
+  passport.authenticate("vendor-jwt", { session: false }),GetCancel);
 
 // Create an apartment (Host only)
 router.post(
@@ -40,19 +35,14 @@ router.post(
       message: "Apartment created successfully",
       apartmentData: req.body,
     });
-  },
-  apartmentController.createApartment
-);
+  },CreateApartment);
 //router.post('/', apartmentController.createApartment);
 
 // To see image upload
 router.post(
   "/images",
   passport.authenticate("vendor-jwt", { session: false }),
-  upload.array("images", 5),
-  apartmentController.createApartment
-);
-//router.post('/', upload.array('images', 5), apartmentController.createApartment);
+  upload.array("images", 5),CreateApartment);
 
 // Update an apartment (Host only)
 router.put(
@@ -65,17 +55,12 @@ router.put(
       message: "Apartment updated successfully",
       apartmentData: req.body,
     });
-  },
-  apartmentController.updateApartment
-);
+  },UpdateApartment);
 //router.put('/:id', apartmentController.updateApartment);
 
 // Delete an apartment (Host/Admin only)
 router.delete(
   "/:id",
-  passport.authenticate("vendor-jwt", { session: false }),
-  apartmentController.deleteApartment
-);
-//router.delete('/:id', apartmentController.deleteApartment);
+  passport.authenticate("vendor-jwt", { session: false }),DeleteApartment);
 
 module.exports = router;

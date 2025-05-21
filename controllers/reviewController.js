@@ -1,6 +1,6 @@
 const Review = require("../Model/reviewModel");
 
-exports.createReview = async (req, res) => {
+const CreateReview = async (req, res) => {
   const { apartment, rating, comment } = req.body;
 
   const existing = await Review.findOne({ apartment, user: req.user._id });
@@ -11,7 +11,9 @@ exports.createReview = async (req, res) => {
   res.status(201).json(review);
 };
 
-exports.getApartmentReviews = async (req, res) => {
+const GetApartmentReviews = async (req, res) => {
   const reviews = await Review.find({ apartment: req.params.apartmentId }).populate("user", "name");
   res.status(200).json(reviews);
 };
+
+module.exports = {CreateReview,GetApartmentReviews}
