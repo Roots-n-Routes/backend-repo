@@ -1,123 +1,55 @@
 const mongoose = require('mongoose');
+const AddressSchema = require('./schemas/addressSchema');
+const PropertySchema = require('./schemas/propertySchema')
+const CheckInOptions = require('./schemas/checkInOptionsSchema')
+const CheckOutOptions = require('./schemas/checkInOptionsSchema')
+const Amenities = require('./schemas/amenitiesSchema')
+const RoomandRates = require('./schemas/roomAndRatesSchema')
 
 const apartmentSchema = new mongoose.Schema({
-  name_of_property: {
+  name_of_Property: {
     type: String,
     required: true
   },
-  property_address: {
-    country: { 
-      type: String, 
-      required: true 
-    },
-    street_address: { 
-      type: String, 
-      required: true 
-    },
-    unit_number: { 
-      type: String, 
-      required:true
-    },
-    city:{
-      type:String,
-      required:true,
-    },
-    state:{
-      type:String,
-      required:true
-    },
-    zip_code:{
-      type:String,
-      required:true
-    }
-  },
-  property_type:{
-    accomodation_type:{
-      type:String,
-      enum:['resort'],
-      required:true
-    },
-    no_of_units:{
-      type:String,
-      required:true
-    },
-    currency:{
-      type:String,
-      enum:['NGN','KSH','GH'],
-      required:true
-    }
-  },
+  property_address:AddressSchema,
+  property_type:PropertySchema,
   spoken_language:{
-    type:String,
-    enum:['English','French','Igbo','Yoruba','Hausa','Portugese','Arabic','Tamil','Japanese','Xhosa','Italian','Spanish','Hindi','Korean','Pidgin','Amharic','Chinese','Swahili','Zulu','Afrikaans','Dutch'],
+    type:Boolean,
+    default:false,
     required:true
   },
   property_category:{
-    type:String,
-    enum:['Adults only','Party friendly','Family friendly','Children friendly','Business friendly','Pet friendly'],
+    type:Boolean,
+    default:false,
     required:true
   },
   status: { 
     type: String, 
     enum: ['pending', 'approved', 'cancelled'], 
-    default: 'pending' 
+    default: 'pending',
   },
-  paymentStatus: { 
+  payment_status: { 
     type: String, 
     enum: ['pending', 'paid', 'refunded'], 
     default: 'pending' 
   },
-  availableUnits: {
-    type: Number
-  },
-  pricePerNight: { 
-    type: Number, 
-    required: true 
-  },
-  bedrooms: { 
-    type: Number, 
-    required: true 
-  },
-  bathrooms: { 
-    type: Number, 
-    required: true 
-  },
-  maxTravelers: { 
-    type: Number, 
-    required: true 
-  },
-  maxGuests: { 
-    type: Number, 
-    required: true 
-  },
-  amenities: { 
-    type: Array, 
-    required: true 
-  },
+  check_in_options:CheckInOptions,
+  check_out_options:CheckOutOptions,
+  amenities:Amenities,
+  room_and_rates:RoomandRates,
   images: { 
     type: String,
     default:null,
     required:false
-  }, // Array of image URLs
-  host: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'User', 
-    required: true 
   },
-  isAvailable: { 
-    type: Boolean,
-     default: true 
-  },
-  bookings: [
-    {
-      checkIn: Date,
-      checkOut: Date,
-    }
-  ],
   createdAt: {
     type: Date,
     default: Date.now,
   },
+  updatedAt:{
+    type:Date,
+    default:Date.now
+  }
 });
 
 module.exports = mongoose.model('Apartment', apartmentSchema);

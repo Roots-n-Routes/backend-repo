@@ -1,0 +1,8 @@
+Avatar Api: Should it handled by the frontend or backend, if backend create it
+Create Logout Route
+Booking Payment Page in accomodation has missing models
+About business and business verification documents
+Vendor referral and rewards
+Enable two factor authentication (Is it done by backend or frontend)
+Full setup for Guests(model,routes,services and controlllers)
+Payment on vendor and user needs bank account and card added
