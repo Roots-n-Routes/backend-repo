@@ -56,7 +56,8 @@ router.put(
       apartmentData: req.body,
     });
   },UpdateApartment);
-//router.put('/:id', apartmentController.updateApartment);
+
+router.get("/search", SearchApartment);
 
 // Delete an apartment (Host/Admin only)
 router.delete(

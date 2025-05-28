@@ -1,19 +1,33 @@
-const Review = require("../Model/reviewModel");
+const ReviewServices = require("../Services/reviewServices");
 
 const CreateReview = async (req, res) => {
-  const { apartment, rating, comment } = req.body;
+  try {
+    const apartmentId = req.params.apartmentId
+    const userId = req.user._id;
+    const payload = req.body;
 
-  const existing = await Review.findOne({ apartment, user: req.user._id });
-  if (existing) return res.status(400).json({ message: "You have already reviewed this apartment." });
-
-  const review = new Review({ apartment, user: req.user._id, rating, comment });
-  await review.save();
-  res.status(201).json(review);
+    const CreateReview = await ReviewServices.CreateReview({
+      apartmentId: apartmentId,
+      rating:payload.rating,
+      comment:payload.comment,
+      userId: userId
+    })
+    res.status(CreateReview.code).json(CreateReview)
+  } catch (error) {
+    return res.status(500).json({message:"Server error", error:error.message})
+  }
 };
 
 const GetApartmentReviews = async (req, res) => {
-  const reviews = await Review.find({ apartment: req.params.apartmentId }).populate("user", "name");
-  res.status(200).json(reviews);
+  try {
+    const apartmentId = req.params.id
+    const GetReviews = await ReviewServices.GetReviews({
+      apartmentId
+    })
+    res.status(GetReviews.code).json(GetReviews)
+  } catch (error) {
+    return res.status(500).json({message:"Server error", error:error.message})
+  }
 };
 
 module.exports = {CreateReview,GetApartmentReviews}

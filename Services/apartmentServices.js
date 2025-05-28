@@ -80,12 +80,12 @@ const GetApartment = async ({apartmentId}) => {
             message:"Apartment available",
             data:{Apartment:apartment}
         };
-   } catch (err) {
+   } catch (error) {
        return{
         code:500,
         success:false,
-        message:err.message,
-       }      
+        message:error.message,
+      }      
    }
 };
 
@@ -231,6 +231,37 @@ const GetApprove = async({apartmentId}) => {
     }
   } catch (error) {
     return{
+      code:500,
+      success:false,
+      data:null,
+      message:error.message
+    }
+  }
+}
+
+const GetCancel = async({apartmentId}) =>{
+  try {
+    const apartment = await apartmentModel.findById(apartmentId)
+      if (!apartment) {
+        return{
+          code:404,
+          success:false,
+          message:"Apartment not found",
+          data:null
+        }
+      }
+      if(apartment.status !== "pending"){
+          return{
+            code:404,
+            success:false,
+            message:"Apartment not found",
+            data:null
+          }
+      }
+      apartment.status = 'cancelled'
+    await apartment.save
+  } catch (error) {
+     return{
       code:500,
       success:false,
       data:null,

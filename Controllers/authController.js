@@ -86,7 +86,6 @@ const UpdateUser = async(req,res) =>{
 
 const DeleteUser = async (req,res) => {
     const user = req.user._id
-    
     const deleteResponse = await AuthService.DeleteUser({
         user
     })

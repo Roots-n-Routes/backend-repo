@@ -6,14 +6,14 @@ const PropertyTypeSchema = new mongoose.Schema({
     enum: ['resort'], 
     required: true 
     },
-  no_of_units: { 
-    type: String, 
-    required: true 
+    no_of_units: { 
+      type: String, 
+      required: true 
     },
-  currency: { 
-    type: String, 
-    enum: ['NGN', 'KSH', 'GH'], 
-    required: true 
+    currency: { 
+      type: String, 
+      enum: ['NGN', 'KSH', 'GH'], 
+      required: true 
     },
 });
 
